@@ -1,0 +1,94 @@
+<app-layout titulo="Detalle de publicación" subtitulo="Información, solicitudes y estado de la donación">
+  <!-- Un solo elemento por bloque para que Angular lo proyecte en la cabecera -->
+  @if (pub()?.estado === 'pendiente' || pub()?.estado === 'aprobada') {
+    <a acciones class="btn btn-neutro" [routerLink]="['/publicaciones', id, 'editar']">✎ Editar</a>
+  }
+  @if (pub()) {
+    <button acciones class="btn btn-peligro" (click)="eliminar()">Eliminar</button>
+  }
+
+  <a class="volver" routerLink="/publicaciones">← Volver a publicaciones</a>
+
+  @if (cargando()) {
+    <div class="estado-vacio">Cargando publicación…</div>
+  } @else if (error()) {
+    <div class="estado-error">{{ error() }} <button class="btn btn-neutro btn-sm" (click)="cargar()">Reintentar</button></div>
+  } @else if (pub()) {
+    @let p = pub()!;
+    @if (aviso()) { <div class="aviso-ok">{{ aviso() }}</div> }
+
+    <section class="tarjeta">
+      @if (foto(); as src) { <img class="foto-detalle" [src]="src" [alt]="'Foto de ' + p.titulo" /> }
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px">
+        <h2 style="font-size:20px; margin:0">{{ p.titulo }}</h2>
+        <app-estado-badge [estado]="p.estado" />
+      </div>
+      <p class="descripcion">{{ p.descripcion }}</p>
+      <div class="detalle-grid" style="margin-top:18px">
+        <div><div class="dato-etiqueta">Categoría</div><div class="dato-valor">{{ p.categoria }}</div></div>
+        <div><div class="dato-etiqueta">Cantidad</div><div class="dato-valor">{{ p.cantidad }}</div></div>
+        <div><div class="dato-etiqueta">Ubicación</div><div class="dato-valor">{{ p.ubicacion }}</div></div>
+        <div>
+          <div class="dato-etiqueta">Publicado por</div>
+          <div class="dato-valor">
+            @if (autorId(); as uid) { <a class="link" [routerLink]="['/usuarios', uid]">{{ autor() }}</a> } @else { {{ autor() }} }
+          </div>
+        </div>
+        <div><div class="dato-etiqueta">Creada</div><div class="dato-valor">{{ p.createdAt | date:'dd MMM yyyy, HH:mm' }}</div></div>
+      </div>
+    </section>
+
+    <section class="tarjeta">
+      <h2>Estado de la donación</h2>
+      @switch (p.estado) {
+        @case ('pendiente') {
+          <p class="texto-suave" style="margin-bottom:14px">Revisa la publicación y decide si se muestra en la app.</p>
+          <div class="acciones">
+            <button class="btn btn-primario" [disabled]="procesando()" (click)="cambiarEstado('aprobada')">✓ Aprobar</button>
+            <button class="btn btn-peligro" [disabled]="procesando()" (click)="cambiarEstado('rechazada')">✗ Rechazar</button>
+          </div>
+        }
+        @case ('aprobada') {
+          <p class="texto-suave" style="margin-bottom:14px">
+            Visible en la app. Para cerrarla como entregada debe tener una solicitud aceptada.
+          </p>
+          <button class="btn btn-primario" [disabled]="procesando() || !tieneAceptada()" (click)="cambiarEstado('entregada')">
+            📦 Marcar como entregada
+          </button>
+          @if (!tieneAceptada()) { <p class="campo-ayuda" style="margin-top:8px">Aún no hay solicitudes aceptadas.</p> }
+        }
+        @case ('entregada') { <p class="texto-suave">La donación ya fue entregada. Es un estado final.</p> }
+        @case ('rechazada') { <p class="texto-suave">La publicación fue rechazada. Es un estado final.</p> }
+      }
+    </section>
+
+    <section class="tarjeta">
+      <h2>Solicitudes ({{ solicitudes().length }})</h2>
+      @if (solicitudes().length === 0) {
+        <p class="texto-suave">Nadie ha solicitado esta donación todavía.</p>
+      } @else {
+        <table class="tabla">
+          <thead><tr><th>Solicitante</th><th>Mensaje</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            @for (s of solicitudes(); track s._id) {
+              <tr>
+                <td>{{ solicitante(s) }}</td>
+                <td class="texto-suave">{{ s.mensaje || '—' }}</td>
+                <td class="texto-suave">{{ s.createdAt | date:'dd MMM yyyy' }}</td>
+                <td><app-estado-badge [estado]="s.estado" /></td>
+                <td>
+                  @if (s.estado === 'pendiente') {
+                    <div class="acciones">
+                      <button class="btn btn-secundario btn-sm" (click)="resolver(s, 'aceptada')">Aceptar</button>
+                      <button class="btn btn-peligro btn-sm" (click)="resolver(s, 'rechazada')">Rechazar</button>
+                    </div>
+                  } @else { <span class="texto-suave">—</span> }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+  }
+</app-layout>

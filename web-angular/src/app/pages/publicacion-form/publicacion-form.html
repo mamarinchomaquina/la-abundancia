@@ -1,0 +1,82 @@
+<app-layout
+  [titulo]="editando ? 'Editar publicación' : 'Nueva publicación'"
+  [subtitulo]="editando ? 'Corrige los datos de la donación' : 'Las publicaciones creadas aquí quedan pendientes de aprobación'">
+
+  <a class="volver" [routerLink]="editando ? ['/publicaciones', id] : ['/publicaciones']">← Volver</a>
+
+  @if (cargando()) {
+    <div class="estado-vacio">Cargando publicación…</div>
+  } @else {
+    <form class="tarjeta" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+      @if (error()) { <div class="aviso-error">{{ error() }}</div> }
+
+      <div class="form-grid">
+        <div class="campo ancho" [class.invalido]="invalido('titulo')">
+          <label for="titulo">Título *</label>
+          <input id="titulo" formControlName="titulo" maxlength="150" placeholder="Ej: Mercado para una familia" />
+          @if (invalido('titulo')) {
+            <span class="campo-error">
+              @if (form.controls.titulo.hasError('maxlength')) { Máximo 150 caracteres. } @else { El título es obligatorio. }
+            </span>
+          }
+        </div>
+
+        <div class="campo ancho" [class.invalido]="invalido('descripcion')">
+          <label for="descripcion">Descripción *</label>
+          <textarea id="descripcion" formControlName="descripcion" maxlength="3000" placeholder="Describe la donación"></textarea>
+          @if (invalido('descripcion')) {
+            <span class="campo-error">
+              @if (form.controls.descripcion.hasError('maxlength')) { Máximo 3000 caracteres. } @else { La descripción es obligatoria. }
+            </span>
+          }
+        </div>
+
+        <div class="campo" [class.invalido]="invalido('categoria')">
+          <label for="categoria">Categoría *</label>
+          <select id="categoria" formControlName="categoria">
+            <option value="" disabled>Elige una categoría</option>
+            @for (c of categorias; track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+          @if (invalido('categoria')) { <span class="campo-error">Elige una categoría.</span> }
+        </div>
+
+        <div class="campo" [class.invalido]="invalido('cantidad')">
+          <label for="cantidad">Cantidad *</label>
+          <input id="cantidad" type="number" min="1" step="1" formControlName="cantidad" />
+          @if (invalido('cantidad')) { <span class="campo-error">Debe ser un número entero mayor o igual a 1.</span> }
+        </div>
+
+        <div class="campo ancho" [class.invalido]="invalido('ubicacion')">
+          <label for="ubicacion">Ubicación *</label>
+          <input id="ubicacion" formControlName="ubicacion" maxlength="200" placeholder="Barrio o dirección de entrega" />
+          @if (invalido('ubicacion')) { <span class="campo-error">La ubicación es obligatoria.</span> }
+        </div>
+        <div class="campo ancho" [class.invalido]="errorFoto()">
+          <label for="foto">Foto (opcional)</label>
+          <div class="foto-zona">
+            @if (vistaPrevia() || fotoActual(); as src) {
+              <img class="foto-previa" [src]="src" alt="Vista previa de la foto" />
+            } @else {
+              <div class="foto-vacia">Sin foto</div>
+            }
+            <div class="foto-controles">
+              <input #inputFoto id="foto" type="file" accept="image/jpeg,image/png,image/webp" (change)="elegirFoto($event)" />
+              @if (vistaPrevia() || fotoActual()) {
+                <button type="button" class="btn btn-peligro btn-sm" (click)="descartarFoto(inputFoto)">Quitar foto</button>
+              }
+              <span class="campo-ayuda">JPG, PNG o WEBP. Máximo 2 MB.</span>
+              @if (errorFoto()) { <span class="campo-error">{{ errorFoto() }}</span> }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-acciones">
+        <a class="btn btn-neutro" [routerLink]="editando ? ['/publicaciones', id] : ['/publicaciones']">Cancelar</a>
+        <button type="submit" class="btn btn-primario" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando…' : (editando ? 'Guardar cambios' : 'Crear publicación') }}
+        </button>
+      </div>
+    </form>
+  }
+</app-layout>

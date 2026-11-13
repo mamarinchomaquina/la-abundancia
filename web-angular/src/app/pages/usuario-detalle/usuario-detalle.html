@@ -1,0 +1,82 @@
+<app-layout titulo="Detalle de usuario" subtitulo="Datos de la cuenta e historial de actividad">
+  @if (usuario()) {
+    <a acciones class="btn btn-neutro" [routerLink]="['/usuarios', id, 'editar']">✎ Editar</a>
+  }
+  @if (usuario()?.rol === 'usuario') {
+    <button acciones class="btn" [class.btn-peligro]="usuario()?.activo" [class.btn-secundario]="!usuario()?.activo" (click)="toggleActivo()">
+      {{ usuario()?.activo ? 'Suspender' : 'Activar' }}
+    </button>
+  }
+
+  <a class="volver" routerLink="/usuarios">← Volver a usuarios</a>
+
+  @if (cargando()) {
+    <div class="estado-vacio">Cargando usuario…</div>
+  } @else if (error()) {
+    <div class="estado-error">{{ error() }} <button class="btn btn-neutro btn-sm" (click)="cargar()">Reintentar</button></div>
+  } @else if (usuario()) {
+    @let u = usuario()!;
+    <section class="tarjeta">
+      <div class="detalle-grid">
+        <div><div class="dato-etiqueta">Nombre</div><div class="dato-valor">{{ u.nombre }}</div></div>
+        <div><div class="dato-etiqueta">Correo</div><div class="dato-valor">{{ u.email }}</div></div>
+        <div><div class="dato-etiqueta">Rol</div><div class="dato-valor">{{ u.rol === 'admin' ? 'Administrador' : 'Usuario' }}</div></div>
+        <div>
+          <div class="dato-etiqueta">Estado</div>
+          <span class="estado-badge" [class.estado-activo]="u.activo" [class.estado-suspendido]="!u.activo">
+            {{ u.activo ? 'Activo' : 'Suspendido' }}
+          </span>
+        </div>
+        <div><div class="dato-etiqueta">Registrado</div><div class="dato-valor">{{ u.createdAt | date:'dd MMM yyyy' }}</div></div>
+        <div><div class="dato-etiqueta">Última actualización</div><div class="dato-valor">{{ u.updatedAt | date:'dd MMM yyyy, HH:mm' }}</div></div>
+      </div>
+    </section>
+
+    <section class="tarjeta">
+      <h2>Publicaciones ({{ u.publicaciones.length }})</h2>
+      @if (u.publicaciones.length === 0) {
+        <p class="texto-suave">No ha publicado donaciones.</p>
+      } @else {
+        <table class="tabla">
+          <thead><tr><th>Título</th><th>Categoría</th><th>Cantidad</th><th>Fecha</th><th>Estado</th></tr></thead>
+          <tbody>
+            @for (p of u.publicaciones; track p._id) {
+              <tr>
+                <td><a class="link" [routerLink]="['/publicaciones', p._id]">{{ p.titulo }}</a></td>
+                <td class="texto-suave">{{ p.categoria }}</td>
+                <td class="texto-suave">{{ p.cantidad }}</td>
+                <td class="texto-suave">{{ p.createdAt | date:'dd MMM yyyy' }}</td>
+                <td><app-estado-badge [estado]="p.estado" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+
+    <section class="tarjeta">
+      <h2>Solicitudes hechas ({{ u.solicitudes.length }})</h2>
+      @if (u.solicitudes.length === 0) {
+        <p class="texto-suave">No ha solicitado donaciones.</p>
+      } @else {
+        <table class="tabla">
+          <thead><tr><th>Publicación</th><th>Mensaje</th><th>Fecha</th><th>Estado</th></tr></thead>
+          <tbody>
+            @for (s of u.solicitudes; track s._id) {
+              <tr>
+                <td>
+                  @if (s.publicacion) {
+                    <a class="link" [routerLink]="['/publicaciones', s.publicacion._id]">{{ s.publicacion.titulo }}</a>
+                  } @else { <span class="texto-suave">(eliminada)</span> }
+                </td>
+                <td class="texto-suave">{{ s.mensaje || '—' }}</td>
+                <td class="texto-suave">{{ s.createdAt | date:'dd MMM yyyy' }}</td>
+                <td><app-estado-badge [estado]="s.estado" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+  }
+</app-layout>

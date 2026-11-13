@@ -1,0 +1,123 @@
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-marca">
+      <img src="logo-abundancia.png" alt="La Abundancia" class="sidebar-logo" />
+      <span class="sidebar-titulo">La Abundancia</span>
+      <span class="sidebar-subtitulo">Comida típica, Postres &amp; Quesos</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Inicio
+      </a>
+      <a routerLink="/publicaciones" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        Publicaciones
+      </a>
+      <a routerLink="/solicitudes" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Solicitudes
+      </a>
+      <a routerLink="/usuarios" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Usuarios
+      </a>
+    </nav>
+
+    <div class="sidebar-pie">
+      <div class="usuario-info">
+        <div class="avatar">{{ auth.usuario()?.nombre?.charAt(0) | uppercase }}</div>
+        <div>
+          <div class="usuario-nombre">{{ auth.usuario()?.nombre }}</div>
+          <div class="usuario-rol">Administrador</div>
+        </div>
+      </div>
+      <button class="btn-salir" (click)="cerrarSesion()">Salir</button>
+    </div>
+  </aside>
+
+  <!-- Contenido -->
+  <main class="contenido">
+    <header class="cabecera">
+      <div>
+        <h1>Inicio</h1>
+        <p>Resumen general de la plataforma</p>
+      </div>
+    </header>
+
+    @if (cargando()) {
+      <div class="estado-vacio">Cargando…</div>
+    } @else if (error()) {
+      <div class="estado-error">{{ error() }}</div>
+    } @else if (stats()) {
+
+      <!-- Stats -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Usuarios registrados</div>
+          <div class="stat-valor">{{ stats()!.usuarios }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Publicaciones aprobadas</div>
+          <div class="stat-valor">{{ stats()!.publicaciones.aprobada }}</div>
+          <div class="stat-extra">
+            <span class="chip amarillo">{{ stats()!.publicaciones.pendiente }} pendientes</span>
+            <span class="chip verde">{{ stats()!.publicaciones.entregada }} entregadas</span>
+            <span class="chip gris">{{ stats()!.publicaciones.rechazada }} rechazadas</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Solicitudes activas</div>
+          <div class="stat-valor">{{ stats()!.solicitudes.pendiente }}</div>
+          <div class="stat-extra">
+            <span class="chip verde">{{ stats()!.solicitudes.aceptada }} aceptadas</span>
+            <span class="chip gris">{{ stats()!.solicitudes.rechazada }} rechazadas</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gráficas -->
+      <section class="graficas-grid">
+
+        <div class="grafica-card">
+          <div class="grafica-titulo">
+            <span>Publicaciones por semana</span>
+            <span class="grafica-sub">Últimas 8 semanas</span>
+          </div>
+          <div class="grafica-canvas-wrap">
+            <canvas #chartBarras></canvas>
+          </div>
+        </div>
+
+        <div class="grafica-card">
+          <div class="grafica-titulo">
+            <span>Por categoría</span>
+            <span class="grafica-sub">Total acumulado</span>
+          </div>
+          <div class="grafica-canvas-wrap donut-wrap">
+            <canvas #chartDonut></canvas>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Acceso rápido -->
+      <section class="acceso-rapido">
+        <h2>Accesos rápidos</h2>
+        <a routerLink="/publicaciones" class="acceso-item">
+          <span>Gestionar publicaciones</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a routerLink="/usuarios" class="acceso-item">
+          <span>Ver usuarios</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </section>
+
+    }
+  </main>
+
+</div>

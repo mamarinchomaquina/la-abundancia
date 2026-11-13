@@ -1,0 +1,260 @@
+/* ── Fondo animado ── */
+.pagina {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #2D0A6E 0%, #4C1D95 35%, #6B21A8 65%, #7C3AED 100%);
+}
+
+/* blob 1 — arriba izquierda */
+.pagina::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  left: -120px;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(167,139,250,.35) 0%, transparent 70%);
+  animation: blobFloat1 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* blob 2 — abajo derecha */
+.pagina::after {
+  content: '';
+  position: absolute;
+  bottom: -140px;
+  right: -100px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(109,40,217,.4) 0%, transparent 70%);
+  animation: blobFloat2 10s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes blobFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, 30px) scale(1.08); }
+  66%       { transform: translate(-20px, 50px) scale(.96); }
+}
+
+@keyframes blobFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-50px, -40px) scale(1.1); }
+  70%       { transform: translate(30px, -20px) scale(.93); }
+}
+
+/* punto de luz central sutil */
+.pagina > .tarjeta {
+  position: relative;
+  z-index: 1;
+}
+
+/* partículas decorativas — círculos flotantes */
+.pagina .tarjeta::before {
+  content: '';
+  position: fixed;
+  top: 15%;
+  right: 12%;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.12);
+  animation: ringFloat 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.pagina .tarjeta::after {
+  content: '';
+  position: fixed;
+  bottom: 18%;
+  left: 10%;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.1);
+  animation: ringFloat 9s 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes ringFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: .6; }
+  50%       { transform: translateY(-18px) rotate(8deg); opacity: 1; }
+}
+
+/* ── Tarjeta ── */
+.tarjeta {
+  background: rgba(255,255,255,.97);
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 20px;
+  padding: 44px 40px;
+  width: 100%;
+  max-width: 390px;
+  box-shadow:
+    0 8px 40px rgba(0,0,0,.3),
+    0 2px 8px rgba(0,0,0,.12),
+    inset 0 1px 0 rgba(255,255,255,.8);
+  backdrop-filter: blur(2px);
+  animation: tarjetaEntrada .55s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+@keyframes tarjetaEntrada {
+  from { opacity: 0; transform: translateY(28px) scale(.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Marca ── */
+.marca {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 32px;
+  animation: tarjetaEntrada .5s .08s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+.login-logo {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: var(--morado-suave);
+  padding: 4px;
+  box-shadow:
+    0 0 0 5px rgba(107,33,168,.15),
+    0 8px 24px rgba(107,33,168,.25);
+  animation: logoBounce .6s .2s cubic-bezier(.34,1.56,.64,1) both,
+             logoGlow 3s 1s ease-in-out infinite;
+}
+
+@keyframes logoBounce {
+  from { opacity: 0; transform: scale(.6) translateY(-10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes logoGlow {
+  0%, 100% { box-shadow: 0 0 0 5px rgba(107,33,168,.15), 0 8px 24px rgba(107,33,168,.25); }
+  50%       { box-shadow: 0 0 0 9px rgba(107,33,168,.07), 0 8px 30px rgba(107,33,168,.32); }
+}
+
+.nombre {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--morado), var(--morado-medio));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: .3px;
+}
+
+.nombre-sub {
+  font-size: 11.5px;
+  color: var(--texto-suave);
+  letter-spacing: .2px;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--texto);
+  margin-bottom: 4px;
+  text-align: center;
+  animation: fadeSlide .4s .15s ease both;
+}
+
+.subtitulo {
+  font-size: 13px;
+  color: var(--texto-suave);
+  margin-bottom: 28px;
+  text-align: center;
+  animation: fadeSlide .4s .2s ease both;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+  animation: fadeSlide .4s ease both;
+}
+
+.campo:nth-of-type(1) { animation-delay: .22s; }
+.campo:nth-of-type(2) { animation-delay: .28s; }
+
+label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--texto);
+}
+
+input {
+  padding: 10px 13px;
+  border: 1.5px solid var(--borde);
+  border-radius: 9px;
+  font-size: 14px;
+  color: var(--texto);
+  background: var(--blanco);
+  outline: none;
+  transition: border-color .18s, box-shadow .18s;
+}
+
+input:focus {
+  border-color: var(--morado);
+  box-shadow: 0 0 0 3px rgba(107,33,168,.12);
+}
+
+input::placeholder { color: #BCBAB5; }
+
+.mensaje-error {
+  font-size: 13px;
+  color: var(--rojo);
+  background: var(--rojo-suave);
+  padding: 9px 13px;
+  border-radius: 9px;
+  margin-bottom: 16px;
+  border-left: 3px solid var(--rojo);
+  animation: fadeSlide .3s ease;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 11px;
+  background: linear-gradient(135deg, var(--morado), var(--morado-medio));
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 9px;
+  margin-top: 6px;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, opacity .15s;
+  box-shadow: 0 4px 16px rgba(107,33,168,.35);
+  letter-spacing: .2px;
+  cursor: pointer;
+  animation: fadeSlide .4s .34s ease both;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 7px 22px rgba(107,33,168,.45);
+}
+
+button[type="submit"]:active:not(:disabled) {
+  transform: translateY(0) scale(.99);
+}
+
+button[type="submit"]:disabled {
+  opacity: .65;
+  cursor: default;
+  box-shadow: none;
+}

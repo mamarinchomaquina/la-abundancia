@@ -1,0 +1,126 @@
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-marca">
+      <img src="logo-abundancia.png" alt="La Abundancia" class="sidebar-logo" />
+      <span class="sidebar-titulo">La Abundancia</span>
+      <span class="sidebar-subtitulo">Comida típica, Postres &amp; Quesos</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Inicio
+      </a>
+      <a routerLink="/publicaciones" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        Publicaciones
+      </a>
+      <a routerLink="/solicitudes" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Solicitudes
+      </a>
+      <a routerLink="/usuarios" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Usuarios
+      </a>
+    </nav>
+
+    <div class="sidebar-pie">
+      <div class="usuario-info">
+        <div class="avatar">{{ auth.usuario()?.nombre?.charAt(0) | uppercase }}</div>
+        <div>
+          <div class="usuario-nombre">{{ auth.usuario()?.nombre }}</div>
+          <div class="usuario-rol">Administrador</div>
+        </div>
+      </div>
+      <button class="btn-salir" (click)="cerrarSesion()">Salir</button>
+    </div>
+  </aside>
+
+  <!-- Contenido -->
+  <main class="contenido">
+    <header class="cabecera">
+      <div>
+        <h1>Usuarios</h1>
+        <p>Gestiona los usuarios registrados en la plataforma</p>
+      </div>
+      <a class="btn btn-primario" routerLink="/usuarios/nuevo">+ Nuevo usuario</a>
+    </header>
+
+    <!-- Controles -->
+    <div class="controles">
+      <div class="filtros">
+        @for (f of [['todos','Todos'],['activo','Activos'],['suspendido','Suspendidos']]; track f[0]) {
+          <button class="filtro-btn" [class.activo]="filtroActivo() === f[0]" (click)="cambiarFiltro($any(f[0]))">
+            {{ f[1] }}
+          </button>
+        }
+      </div>
+      <input type="text" class="buscador" placeholder="Buscar por nombre o correo…" [(ngModel)]="buscando" />
+    </div>
+
+    @if (cargando()) {
+      <div class="estado-vacio">Cargando usuarios…</div>
+    } @else if (error()) {
+      <div class="estado-error">{{ error() }}</div>
+    } @else if (filtrados().length === 0) {
+      <div class="estado-vacio">No hay usuarios para mostrar.</div>
+    } @else {
+      <div class="tabla-wrapper">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Correo</th>
+              <th>Publicaciones</th>
+              <th>Registrado</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of filtrados(); track u._id) {
+              <tr [class.fila-suspendida]="!u.activo">
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar">{{ u.nombre.charAt(0) ?? "" | uppercase }}</div>
+                    <div>
+                      <a class="user-nombre link" [routerLink]="['/usuarios', u._id]">{{ u.nombre }}</a>
+                      <div class="user-rol">{{ u.rol }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="texto-suave">{{ u.email }}</td>
+                <td>
+                  <span class="badge-num">{{ u.publicaciones }}</span>
+                </td>
+                <td class="texto-suave">{{ u.createdAt | date:'dd MMM yyyy' }}</td>
+                <td>
+                  <span class="estado-badge" [class.estado-activo]="u.activo" [class.estado-suspendido]="!u.activo">
+                    {{ u.activo ? 'Activo' : 'Suspendido' }}
+                  </span>
+                </td>
+                <td>
+                  @if (u.rol !== 'admin') {
+                    <button
+                      class="btn-toggle"
+                      [class.btn-suspender]="u.activo"
+                      [class.btn-activar]="!u.activo"
+                      (click)="toggleActivo(u)">
+                      {{ u.activo ? 'Suspender' : 'Activar' }}
+                    </button>
+                  } @else {
+                    <span class="texto-suave" style="font-size:12px">Admin</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="conteo">{{ filtrados().length }} usuario{{ filtrados().length !== 1 ? 's' : '' }}</p>
+    }
+  </main>
+</div>

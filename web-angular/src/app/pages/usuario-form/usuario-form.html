@@ -1,0 +1,64 @@
+<app-layout
+  [titulo]="editando ? 'Editar usuario' : 'Nuevo usuario'"
+  [subtitulo]="editando ? 'Actualiza los datos de la cuenta' : 'Crea una cuenta para la app o para el panel'">
+
+  <a class="volver" [routerLink]="editando ? ['/usuarios', id] : ['/usuarios']">← Volver</a>
+
+  @if (cargando()) {
+    <div class="estado-vacio">Cargando usuario…</div>
+  } @else {
+    <form class="tarjeta" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+      @if (error()) { <div class="aviso-error">{{ error() }}</div> }
+
+      <div class="form-grid">
+        <div class="campo" [class.invalido]="invalido('nombre')">
+          <label for="nombre">Nombre *</label>
+          <input id="nombre" formControlName="nombre" maxlength="100" placeholder="Nombre completo" />
+          @if (invalido('nombre')) { <span class="campo-error">El nombre es obligatorio.</span> }
+        </div>
+
+        <div class="campo" [class.invalido]="invalido('email')">
+          <label for="email">Correo electrónico *</label>
+          <input id="email" type="email" formControlName="email" placeholder="correo@ejemplo.com" />
+          @if (invalido('email')) { <span class="campo-error">Escribe un correo válido.</span> }
+        </div>
+
+        <div class="campo" [class.invalido]="invalido('rol')">
+          <label for="rol">Rol *</label>
+          <select id="rol" formControlName="rol">
+            <option value="usuario">Usuario (app móvil)</option>
+            <option value="admin">Administrador (panel)</option>
+          </select>
+          @if (esYoMismo) { <span class="campo-ayuda">No puedes cambiar tu propio rol.</span> }
+        </div>
+
+        <div></div>
+
+        <div class="campo" [class.invalido]="invalido('password')">
+          <label for="password">{{ editando ? 'Nueva contraseña' : 'Contraseña *' }}</label>
+          <input id="password" type="password" formControlName="password" autocomplete="new-password" />
+          @if (invalido('password')) {
+            <span class="campo-error">
+              @if (form.controls.password.hasError('required')) { La contraseña es obligatoria. } @else { Mínimo 8 caracteres. }
+            </span>
+          } @else if (editando) {
+            <span class="campo-ayuda">Déjala vacía para no cambiarla.</span>
+          }
+        </div>
+
+        <div class="campo" [class.invalido]="invalido('confirmar')">
+          <label for="confirmar">Confirmar contraseña</label>
+          <input id="confirmar" type="password" formControlName="confirmar" autocomplete="new-password" />
+          @if (invalido('confirmar')) { <span class="campo-error">Las contraseñas no coinciden.</span> }
+        </div>
+      </div>
+
+      <div class="form-acciones">
+        <a class="btn btn-neutro" [routerLink]="editando ? ['/usuarios', id] : ['/usuarios']">Cancelar</a>
+        <button type="submit" class="btn btn-primario" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando…' : (editando ? 'Guardar cambios' : 'Crear usuario') }}
+        </button>
+      </div>
+    </form>
+  }
+</app-layout>

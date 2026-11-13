@@ -1,0 +1,131 @@
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-marca">
+      <img src="logo-abundancia.png" alt="La Abundancia" class="sidebar-logo" />
+      <span class="sidebar-titulo">La Abundancia</span>
+      <span class="sidebar-subtitulo">Panel Admin</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a routerLink="/publicaciones" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        Publicaciones
+      </a>
+      <a routerLink="/solicitudes" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Solicitudes
+      </a>
+      <a routerLink="/usuarios" routerLinkActive="activo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Usuarios
+      </a>
+    </nav>
+
+    <div class="sidebar-pie">
+      <div class="usuario-info">
+        <div class="avatar">{{ auth.usuario()?.nombre?.charAt(0) | uppercase }}</div>
+        <div>
+          <div class="usuario-nombre">{{ auth.usuario()?.nombre }}</div>
+          <div class="usuario-rol">Administrador</div>
+        </div>
+      </div>
+      <button class="btn-salir" (click)="cerrarSesion()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido -->
+  <main class="contenido">
+    <header class="cabecera">
+      <div>
+        <h1>Publicaciones</h1>
+        <p>Modera el contenido enviado por los usuarios</p>
+      </div>
+      <a class="btn btn-primario" routerLink="/publicaciones/nueva">+ Nueva publicación</a>
+    </header>
+
+    <!-- Controles -->
+    <div class="controles">
+      <div class="filtros">
+        @for (f of filtroOpciones; track f.valor) {
+          <button
+            class="filtro-btn"
+            [class.activo]="filtro() === f.valor"
+            (click)="cambiarFiltro(f.valor)">
+            {{ f.etiqueta }}
+          </button>
+        }
+      </div>
+      <input
+        type="text"
+        class="buscador"
+        placeholder="Buscar por título o categoría…"
+        [(ngModel)]="buscando"
+      />
+    </div>
+
+    <!-- Estados -->
+    @if (cargando()) {
+      <div class="estado-vacio">Cargando publicaciones…</div>
+    } @else if (error()) {
+      <div class="estado-error">{{ error() }}</div>
+    } @else if (filtradas().length === 0) {
+      <div class="estado-vacio">No hay publicaciones para mostrar.</div>
+    } @else {
+
+      <!-- Grid de cards -->
+      <div class="pub-grid">
+        @for (pub of filtradas(); track pub._id) {
+          <div class="pub-card">
+            <div class="pub-banner" [style.background]="colorBanner(pub._id)">
+              @if (foto(pub); as src) {
+                <img class="pub-foto" [src]="src" [alt]="pub.titulo" />
+              } @else {
+                <span class="pub-emoji">{{ emojiCategoria(pub.categoria, pub.titulo) }}</span>
+              }
+            </div>
+            <div class="pub-body">
+              <div class="pub-categoria">{{ pub.categoria }}</div>
+              <h3 class="pub-titulo">{{ pub.titulo }}</h3>
+              <p class="pub-desc">{{ pub.descripcion }}</p>
+              <div class="pub-meta">
+                <span class="pub-usuario">{{ nombreUsuario(pub) }}</span>
+              </div>
+              <div class="pub-pie">
+                <span class="estado-badge estado-{{ pub.estado }}">
+                  @if (pub.estado === 'pendiente') { 🕐 }
+                  @else if (pub.estado === 'aprobada') { ✓ }
+                  @else if (pub.estado === 'rechazada') { ✗ }
+                  @else { 📦 }
+                  {{ etiquetaEstado(pub.estado) }}
+                </span>
+                <div class="acciones">
+                  @if (pub.estado === 'pendiente') {
+                    <button class="btn-aprobar" (click)="aprobar(pub)" title="Aprobar">✓ Aprobar</button>
+                    <button class="btn-rechazar" (click)="rechazar(pub)" title="Rechazar">✗</button>
+                  }
+                  @if (pub.estado === 'aprobada') {
+                    <button class="btn-aprobar" (click)="marcarEntregada(pub)" title="Marcar como entregada">📦 Entregada</button>
+                  }
+                  <a class="btn-eliminar" [routerLink]="['/publicaciones', pub._id]">Ver</a>
+                  <button class="btn-eliminar" (click)="eliminar(pub)">Eliminar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <p class="conteo">{{ filtradas().length }} publicación{{ filtradas().length !== 1 ? 'es' : '' }}</p>
+    }
+  </main>
+
+</div>

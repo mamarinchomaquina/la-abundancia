@@ -1,0 +1,31 @@
+# Dependencias y compilados
+node_modules/
+dist/
+.angular/
+
+# Secretos
+.env
+
+# Fotos subidas (datos)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+*.iml
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Documentación (se sube después)
+documentacion/
+
+# Respaldos y temporales
+*.bak
+_to_delete/
+_para_borrar/

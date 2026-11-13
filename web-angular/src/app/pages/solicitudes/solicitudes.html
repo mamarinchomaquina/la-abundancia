@@ -1,0 +1,78 @@
+<app-layout titulo="Solicitudes" subtitulo="Pedidos de donaciones hechos desde la app móvil">
+  <button acciones class="btn btn-neutro" (click)="cargar()" [disabled]="cargando()">↻ Actualizar</button>
+
+  <div class="controles">
+    <div class="filtros">
+      @for (f of filtroOpciones; track f.valor) {
+        <button class="filtro-btn" [class.activo]="filtro() === f.valor" (click)="filtro.set(f.valor)">
+          {{ f.etiqueta }}
+        </button>
+      }
+    </div>
+    <input
+      type="text"
+      class="buscador"
+      placeholder="Buscar por publicación, persona o mensaje…"
+      [ngModel]="busqueda()"
+      (ngModelChange)="busqueda.set($event)"
+    />
+  </div>
+
+  @if (aviso()) { <div class="aviso-ok">{{ aviso() }}</div> }
+
+  @if (cargando()) {
+    <div class="estado-vacio">Cargando solicitudes…</div>
+  } @else if (error()) {
+    <div class="estado-error">{{ error() }} <button class="btn btn-neutro btn-sm" (click)="cargar()">Reintentar</button></div>
+  } @else if (filtradas().length === 0) {
+    <div class="estado-vacio">No hay solicitudes para mostrar.</div>
+  } @else {
+    <div class="tabla-wrapper">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Publicación</th>
+            <th>Solicitante</th>
+            <th>Mensaje</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of filtradas(); track s._id) {
+            <tr>
+              <td>
+                @if (s.publicacion) {
+                  <a class="link" [routerLink]="['/publicaciones', s.publicacion._id]">{{ s.publicacion.titulo }}</a>
+                  <div class="ubicacion-cell">{{ s.publicacion.categoria }} · {{ s.publicacion.ubicacion }}</div>
+                } @else {
+                  <span class="texto-suave">(publicación eliminada)</span>
+                }
+              </td>
+              <td>
+                @if (solicitanteId(s); as uid) {
+                  <a class="link" [routerLink]="['/usuarios', uid]">{{ solicitante(s) }}</a>
+                } @else { {{ solicitante(s) }} }
+              </td>
+              <td class="texto-suave">{{ s.mensaje || '—' }}</td>
+              <td class="texto-suave">{{ s.createdAt | date:'dd MMM yyyy, HH:mm' }}</td>
+              <td><app-estado-badge [estado]="s.estado" /></td>
+              <td>
+                @if (s.estado === 'pendiente') {
+                  <div class="acciones">
+                    <button class="btn btn-secundario btn-sm" [disabled]="procesando() === s._id" (click)="resolver(s, 'aceptada')">Aceptar</button>
+                    <button class="btn btn-peligro btn-sm" [disabled]="procesando() === s._id" (click)="resolver(s, 'rechazada')">Rechazar</button>
+                  </div>
+                } @else {
+                  <span class="texto-suave">—</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="conteo">{{ filtradas().length }} solicitud{{ filtradas().length !== 1 ? 'es' : '' }}</p>
+  }
+</app-layout>
