@@ -21,6 +21,9 @@ android {
 
         buildConfigField("String", "API_HOST", "\"$apiHost\"")
         buildConfigField("String", "API_PORT", "\"3000\"")
+
+        // Pruebas que se ejecutan en el celular (androidTest)
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -43,6 +46,11 @@ android {
         compose = true
         buildConfig = true
     }
+}
+
+// Room guarda aquí el esquema de cada versión de la base local (para escribir y probar migraciones)
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
@@ -84,4 +92,8 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.10.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
+
+    // Pruebas en el celular: migración de Room
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
 }

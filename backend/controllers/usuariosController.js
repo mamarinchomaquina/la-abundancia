@@ -7,9 +7,9 @@ const bcrypt = require('bcryptjs');
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validarDatos({ nombre, email, password, rol }, creando) {
-  if (nombre !== undefined && (typeof nombre !== 'string' || !nombre.trim() || nombre.trim().length > 100))
+  if ((creando || nombre !== undefined) && (typeof nombre !== 'string' || !nombre.trim() || nombre.trim().length > 100))
     return 'El nombre es obligatorio (máximo 100 caracteres).';
-  if (email !== undefined && (typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())))
+  if ((creando || email !== undefined) && (typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())))
     return 'El correo no es válido.';
   if (creando && (typeof password !== 'string' || password.length < 8))
     return 'La contraseña debe tener al menos 8 caracteres.';

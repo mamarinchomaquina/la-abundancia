@@ -24,4 +24,11 @@ const solicitudSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Un usuario solo puede tener una solicitud activa (pendiente o aceptada) por publicación.
+// MongoDB lo garantiza aunque lleguen dos peticiones al mismo tiempo.
+solicitudSchema.index(
+  { publicacion: 1, usuario: 1 },
+  { unique: true, partialFilterExpression: { estado: { $in: ['pendiente', 'aceptada'] } } }
+);
+
 module.exports = mongoose.models.Solicitud || mongoose.model('Solicitud', solicitudSchema);

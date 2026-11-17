@@ -230,7 +230,7 @@ abstract class SolicitudCacheDao {
         SolicitudCacheEntity::class,
     ],
     version = 2,
-    exportSchema = false,
+    exportSchema = true,   // guarda el esquema de cada versión en app/schemas
 )
 abstract class AbundanciaDatabase : RoomDatabase() {
     abstract fun publicacionCacheDao(): PublicacionCacheDao
@@ -239,10 +239,9 @@ abstract class AbundanciaDatabase : RoomDatabase() {
     abstract fun solicitudCacheDao(): SolicitudCacheDao
 
     companion object {
-        fun crear(context: Context): AbundanciaDatabase =
-            Room.databaseBuilder(context.applicationContext, AbundanciaDatabase::class.java, "abundancia.db")
-                .addMigrations(MIGRACION_1_2)
-                .fallbackToDestructiveMigration()
+        fun crear(context: Context, nombre: String = "abundancia.db"): AbundanciaDatabase =
+            Room.databaseBuilder(context.applicationContext, AbundanciaDatabase::class.java, nombre)
+                .addMigrations(MIGRACION_1_2)   // cada versión nueva agrega aquí su Migration(n, n + 1)
                 .build()
     }
 }

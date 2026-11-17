@@ -169,7 +169,12 @@ async function deletePublicacion(req, res, next) {
       });
     }
 
-    await Solicitud.deleteMany({ publicacion: publicacion._id });
+    // Si tiene solicitudes no se elimina, para conservar el historial
+    if (await Solicitud.exists({ publicacion: publicacion._id })) {
+      return res.status(409).json({
+        error: 'No se puede eliminar: la publicación tiene solicitudes registradas y se debe conservar su historial.',
+      });
+    }
     await Publicacion.deleteOne({ _id: publicacion._id });
     borrarImagen(publicacion.imagen);
     return res.status(204).end();

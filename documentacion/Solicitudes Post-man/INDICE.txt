@@ -1,0 +1,65 @@
+CAPTURAS DE POSTMAN - Coleccion "La Abundancia - API" (55 peticiones)
+
+00_Runner_coleccion_completa_103_de_103.png
+   La coleccion completa ejecutada con el Runner de Postman el 16/11/2026:
+   55 peticiones, 103 pruebas, 103 correctas, 0 fallidas, 0 errores.
+
+Captura individual de cada peticion (el archivo empieza con su numero):
+
+01  captura     GET /health — servidor y base de datos
+02  captura     Login admin (guarda tokenAdmin)
+03  captura     Registro donante de prueba
+04  captura     Login donante (guarda tokenDonante)
+05  captura     Registro solicitante de prueba
+06  captura     Login solicitante (guarda tokenSolicitante)
+07  captura     ERROR — login con contraseña incorrecta → 401
+08  captura     ERROR — registro con datos inválidos → 400
+09  captura     ERROR — registro con correo repetido → 409
+10  captura     Crear publicación como donante (queda pendiente)
+11  captura     R9 — reenviar el mismo clienteId no duplica → 200
+12  captura     ERROR — crear sin token → 401
+13  captura     R5 inválido — cantidad 0 → 400
+14  captura     R5 inválido — categoría no permitida → 400
+15  captura     ERROR — campo no permitido (estado) al crear → 400
+16  captura     Listar sin sesión (solo aprobadas)
+17  captura     Listar como admin (todas)
+18  captura     Ver detalle
+19  captura     ERROR — id inválido → 400
+20  captura     ERROR — id inexistente → 404
+21  captura     R6 válido — el donante edita su publicación pendiente
+22  captura     R6 inválido — otro usuario la edita → 403
+23  captura     R1 inválido — pendiente → entregada (salto) → 409
+24  captura     R1 válido — el admin aprueba → 200
+25  en Runner   R1 inválido — aprobada → pendiente → 409
+26  en Runner   R6 inválido — el donante edita una aprobada → 403
+27  en Runner   R2 inválido — entregada sin solicitud aceptada → 409
+28  captura     R8 válido — subir foto (logo de La Abundancia)
+29  captura     R8 inválido — enviar sin archivo → 400
+30  en Runner   ERROR — subir foto sin sesión → 401
+31  en Runner   R3 inválido — solicitar la propia publicación → 400
+32  en Runner   R3 válido — el solicitante pide la donación → 201
+33  en Runner   R3 inválido — repetir solicitud activa → 409
+34  en Runner   Listar solicitudes del donante (recibidas)
+35  en Runner   R4 inválido — el solicitante intenta aceptarla → 403
+36  en Runner   ERROR — estado no válido → 400
+37  en Runner   R4 válido — el donante acepta → 200
+38  en Runner   R4 inválido — volver a resolverla → 409
+39  captura     R2 válido — el admin marca entregada → 200
+40  captura     R1 inválido — entregada es estado final → 409
+41  captura     Listar usuarios
+42  captura     ERROR — listar usuarios sin ser admin → 403
+43  captura     Crear usuario desde el panel → 201
+44  captura     ERROR — crear con correo repetido → 409
+45  captura     ERROR — crear con contraseña corta → 400
+46  captura     Ver detalle con historial
+47  captura     Editar usuario
+48  captura     R7 — suspender al solicitante
+49  captura     R7 inválido — el suspendido intenta entrar → 403
+50  captura     R7 inválido — su token deja de servir → 401
+51  captura     R7 — reactivar al solicitante
+52  captura     Estadísticas (admin)
+53  captura     Gráficas (admin)
+54  captura     ERROR — estadísticas sin sesión → 401
+55  captura     ERROR — ruta inexistente → 404
+
+"en Runner" = sin captura individual; su resultado esta en la captura 00 del Runner (103/103).

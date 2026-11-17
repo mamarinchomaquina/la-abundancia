@@ -1,6 +1,7 @@
 package com.abundancia.app.data
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.MutablePreferences
@@ -73,7 +74,9 @@ object Session {
     /** Lectura inicial (una sola vez al abrir la app). */
     fun init(context: Context) {
         store = context.applicationContext.dataStore
+        val inicio = System.nanoTime()
         val prefs = runBlocking { store.data.first() }
+        Log.d("Arranque", "Session.init: lectura de DataStore en el hilo principal = %.1f ms".format((System.nanoTime() - inicio) / 1_000_000.0))
         token = prefs[KEY_TOKEN]
         val json = prefs[KEY_USUARIO]
         _usuario.value = if (token != null && json != null) {

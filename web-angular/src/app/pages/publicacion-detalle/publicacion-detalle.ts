@@ -90,7 +90,7 @@ export class PublicacionDetalleComponent implements OnInit {
 
   eliminar() {
     const p = this.pub();
-    if (!p || !confirm(`¿Eliminar "${p.titulo}"? También se borrarán sus solicitudes. Esta acción no se puede deshacer.`)) return;
+    if (!p || !confirm(`¿Eliminar "${p.titulo}"? Esta acción no se puede deshacer.`)) return;
     this.api.eliminarPublicacion(this.id).subscribe({
       next: () => this.router.navigate(['/publicaciones']),
       error: e => alert(mensajeDeError(e, 'No se pudo eliminar la publicación.')),

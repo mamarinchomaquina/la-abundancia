@@ -1,0 +1,19 @@
+EVIDENCIAS DE LA APP MOVIL - La Abundancia
+Grabado en el celular el 13/11/2026 (video 00_video_prueba_app.mp4, 2 min 05 s)
+Las capturas 01 a 14 son cuadros tomados del video, en orden.
+
+00_video_prueba_app.mp4                      Recorrido completo de la app.
+01_login.jpg                                 Inicio de sesion. Abajo se ve el servidor detectado.
+02_lista_publicaciones.jpg                   Lista de donaciones con estado (aprobada / pendiente).
+03_filtro_categoria_alimentos.jpg            Filtro por categoria.
+04_detalle_solicitud_enviada.jpg             Detalle de una donacion con la solicitud ya enviada.
+05_publicar_en_linea_enviado.jpg             Publicar con internet: "pizza" queda Enviado.        (P01)
+06_solicitudes_enviadas.jpg                  Solicitudes enviadas por el usuario.
+07_perfil.jpg                                Perfil y cerrar sesion.
+08_ajustes_servidor_conectado.jpg            Ajustes: servidor conectado, conexion automatica, IP manual y categoria preferida.
+09_lista_publicacion_nueva_pendiente.jpg     La publicacion nueva aparece en la lista como Pendiente.   (P01)
+10_wifi_desactivado.jpg                      Se apaga el Wi-Fi.                                    (P14)
+11_sin_conexion_aviso_copia_local.jpg        Aviso "Sin conexion - mostrando la copia guardada".  (P12, P14)
+12_sin_conexion_pendiente_de_envio.jpg       Publicar sin internet: "frijoles" queda Pendiente de envio. (P14)
+13_reconecta_publicacion_enviada.jpg         Al volver el Wi-Fi se envia sola: pasa a Enviado.    (P14)
+14_lista_publicacion_sincronizada.jpg        "frijoles" ya esta en el servidor, una sola vez.     (P14)

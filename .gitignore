@@ -22,9 +22,6 @@ android/.idea/
 .DS_Store
 Thumbs.db
 
-# Documentación (se sube después)
-documentacion/
-
 # Respaldos y temporales
 *.bak
 _to_delete/

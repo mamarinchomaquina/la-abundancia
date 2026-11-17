@@ -61,6 +61,9 @@ async function createSolicitud(req, res, next) {
     });
     return res.status(201).json(solicitud);
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ error: 'Ya tienes una solicitud activa para esta publicación.' });
+    }
     return next(error);
   }
 }
